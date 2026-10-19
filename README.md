@@ -2,16 +2,16 @@
 
 A budget and expense tracker for Kenyan university students. Add what you spend in KES, set a monthly budget, and watch the bar go green, then orange, then red.
 
-**Live app:** (add your Vercel URL here)
-**Live API:** (add your Render URL here)
-**Backend repo:** https://github.com/VeronicahWanjuu/retain-backend
+**Live app:** https://retain-frontend-three.vercel.app
+**Live API:** https://pesasave-api.onrender.com/api
 **Frontend repo:** https://github.com/VeronicahWanjuu/retain-frontend
+**Backend repo:** https://github.com/VeronicahWanjuu/retain-backend
 
 ## Grader login
 
 | Role  | Username | Password |
 |-------|----------|----------|
-| Admin | `admin`  | (your ADMIN_PASSWORD) |
+| Admin | `admin`  | `veronicah` |
 | User  | Sign up on the register page, it takes 10 seconds | |
 
 Note: the free Render server sleeps when nobody uses it. The first request can take up to a minute. Please wait and refresh once.
@@ -44,7 +44,7 @@ Note: the free Render server sleeps when nobody uses it. The first request can t
 | UI | Material UI 7 (light and dark theme) |
 | API calls | Axios (adds the token and refreshes it on a 401) |
 | Tests | Vitest |
-| Hosting | Vercel (frontend), Render (backend) |
+| Hosting | Vercel (frontend), Render and Neon Postgres (backend) |
 
 ## How the requirements are met
 
@@ -63,7 +63,7 @@ Note: the free Render server sleeps when nobody uses it. The first request can t
 
 ```
 src/
-  api/          axios.ts              one axios instance, token + refresh logic
+  api/          axios.ts              one axios instance, token and refresh logic
   context/      AuthContext.tsx       who is logged in, and their role
   store/        store.ts, hooks.ts, slices/expenseSlice.ts
   components/   StatCard, BudgetBar, MonthPicker, ConfirmDialog,
@@ -78,7 +78,7 @@ src/
 
 ## Run it locally
 
-You need Node 20+ and the backend running (see the backend README).
+You need Node 20 or newer and the backend running (see the backend README).
 
 ```
 git clone https://github.com/VeronicahWanjuu/retain-frontend.git
@@ -112,7 +112,7 @@ Test Files  2 passed (2)
      Tests  8 passed (8)
 ```
 
-They cover the budget colour rules (green, orange, red at the right percentages), KES formatting, and the Redux filter slice (setting filters, resetting to page 1 when a filter changes, clearing everything).
+They cover the budget colour rules (green, orange and red at the right percentages), KES formatting, and the Redux filter slice (setting filters, going back to page 1 when a filter changes, and clearing everything).
 
 ## Manual test checklist
 
@@ -145,27 +145,20 @@ They cover the budget colour rules (green, orange, red at the right percentages)
 1. Push the repo to GitHub.
 2. On vercel.com choose **Add New, Project**, then import `retain-frontend`.
 3. Framework preset: **Vite**. Build command `npm run build`, output folder `dist`.
-4. Add an environment variable `VITE_API_URL` with the value `https://YOUR-RENDER-APP.onrender.com/api`.
+4. Add an environment variable `VITE_API_URL` with the value `https://pesasave-api.onrender.com/api`.
 5. Click **Deploy**.
-6. Copy the Vercel URL, then add it to the backend's `CORS_ORIGINS` and `CSRF_ORIGINS` on Render and redeploy the backend.
+6. Put the Vercel URL into the backend's `CORS_ORIGINS` on Render and redeploy the backend.
 
-`vercel.json` rewrites every route to `index.html`, so refreshing on a page like `/expenses` works instead of showing a 404.
+`vercel.json` sends every route to `index.html`, so refreshing on a page like `/expenses` works instead of showing a 404.
 
 ## Why I built it
 
 
-I built PesaSave because most students I know run out of money before the month ends and only find out when M-Pesa says so. I wanted something simple that shows you early, with KES and M-Pesa as the default instead of a US-style app.
+I built PesaSave because most students I know run out of money before the month ends and only find out when M-Pesa says so. I wanted something simple that shows you early, with KES and M-Pesa as the default.
 
-The part I found hardest was keeping the filters, search and page number in sync. Changing any filter has to send you back to page 1, or you end up on an empty page 4. Putting it all in one Redux slice fixed that.
+The hardest part was keeping the filters, search and page number in sync. Changing any filter has to send you back to page 1, or you end up on an empty page 4. Putting it all in one Redux slice fixed that.
 
-One bug I fixeD, when the access token expired the app just kicked people out. I added an Axios interceptor that quietly gets a new token and retries the request.
+One bug I fixed: when the access token expired the app kicked people out. I added an Axios interceptor that quietly gets a new token and retries the request.
 
 Next I would add spending charts, recurring expenses (like rent and data bundles) and CSV export.
 
-## Screenshots
-
-(Add 3 screenshots in a `screenshots` folder, then link them like this.)
-
-![Dashboard](screenshots/dashboard.png)
-![Expenses](screenshots/expenses.png)
-![Admin](screenshots/admin.png)
